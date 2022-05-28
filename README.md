@@ -7,4 +7,6 @@ When aunt enters that information in the application form, it tells her informat
 
 The application saves the data and deduces the expected amount of money, deficit if there is any and will give instructions on how the operator should remedy their actions if any error is noticed.
 
-Metrics of importance include average electricity usage of one bucket and its variance, amount of money generated per bucket and total money
+Metrics of importance include average electricity usage of one bucket and its variance, amount of money generated per unit of electricity and total money earned.
+
+A summary view is generated for review purposes
