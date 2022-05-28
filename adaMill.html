@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+        <style>
+            body{
+                display: flex;
+                flex-direction: column;
+            }
+            input{
+                border-radius: .4em;
+            }
+            fieldset{
+                display: flex;
+                flex-direction: column;
+                background-color: beige;
+
+            }
+            ol{
+                display: flex;
+                flex-direction: column;
+            }
+            li{
+                display: flex;
+                margin-bottom: 0.5em;
+                margin-left: 0em;
+                padding-left: 0em;
+                align-items: flex-start
+            }
+            li.tf{
+                margin-left: auto;
+            }
+
+            #button{
+                align-self: center;
+            }
+        </style>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title> Grinding mill metrics</title>
+    </head>
+    <body>
+        <h1>Hello mamdala </h1>
+        <form name="mills" >
+            <fieldset>
+                <legend>Fill in mill details</legend>
+                <ol>
+                    <li><label for="opening">Opening reading:</label>
+                        <input class="tf" type="number" step ="0.01" min="0" name="opening" id="opening"></li>
+                    <li><label for="closing">Closing Reading:</label>
+                        <input type="number" step ="0.01" min ="0" name="closing" id="closing"></li>
+
+                    <li><label for="buckets">Buckets:</label>
+                        <input type="number" step ="1" min ="0" name="buckets" id="buckets"></li>
+                    <li><label for="amount">Amount:</label>
+                        <input type="number" step ="0.5" min ="0" name="amount" id="amount"></li>
+                    <li><label for="cumDef">Cumulative deficit:</label>
+                        <input type="number" min ="0" name="cumulativeDeficit"  id="cumDef" >
+                    <li><label for="cumAmount">Cumulative amount:</label>
+                        <input type="number" min ="0" name="cumulativeAmount" id="cumAmount" >
+                </ol>
+
+            </fieldset>
+        </form>
+        <input type="submit" value="Calculate" onclick="calculate()" id="button" />
+        <fieldset>
+            <legend>Metrics</legend>
+            <ol>
+                <li><label for="outDate">Date:</label>
+                    <span id="outDate"></span>
+                </li>
+                <li><label for="outAmount">Amount:</label>
+                    <span id="outAmount"></span>
+                </li>
+                <li><label for="outCumAmount">Cumulative amount:</label>
+                    <span id="outCumAmount">z</span>
+                </li>
+                <li><label for="outBuckets">Buckets:</label>
+                    <span id="outBuckets"></span>
+                </li>
+                <li><label for="outIn">Units in:</label>
+                    <span id="outIn"></span>
+                </li>
+                <li><label for="outOut">Units out:</label>
+                    <span id="outOut"></span>
+                </li>
+                <li><label for="outEfficiency">Efficiency:</label>
+                    <span id="outEfficiency"></span>
+                </li>
+                <li><label for="outDeficit">Deficit:</label>
+                    <span id="outDeficit"></span>
+                </li>
+                <li><label for="outCumulative">Cumulative deficit:</label>
+                    <span id="outCumulative"></span>
+                </li>
+                <li><label for="moneyRatio">Rand/Unit Ratio:</label>
+                    <span id="moneyRatio"></span>
+                </li>
+            </ol>
+        </fieldset>
+        <fieldset>
+            <legend>Notes</legend>
+            <ul>
+                <li id="badCount"></li>
+                <li id="littleMoney"></li>
+                <li id="letItGo"></li>
+                <li id="question"></li>
+
+            </ul>
+        </fieldset>        
+        <script defer>
+            function calculate() {
+                var elementary = document.forms.mills.elements;
+                var bucketCost = 20;
+                var amount = elementary.amount.value;
+                var buckets = elementary.buckets.value;
+                var opening = elementary.opening.value;
+                var closing = elementary.closing.value;
+                var efficiency = (opening - closing) / buckets;
+                var deficit;
+                var cumulativeDeficit;
+                var cumulativeAmount = elementary.cumAmount.value;
+                const usualEfficiency = 0.58;
+
+                var units = opening - closing;
+
+                var usualBuckets = units / usualEfficiency;
+                var expectedMoney = usualBuckets * bucketCost;
+                var today = new Date().toLocaleDateString();
+
+                if (Math.abs(expectedMoney) > Math.abs(amount)) {
+                    deficit = expectedMoney - amount;
+                } else
+                    deficit = 0;
+
+                cumulativeDeficit =
+                        Math.abs(elementary.cumDef.value) + Math.abs(deficit);
+
+
+
+                document.getElementById("outDate").innerHTML = today + "";
+                document.getElementById("outAmount").innerHTML = amount + "";
+                document.getElementById("outBuckets").innerHTML = "" + buckets;
+                document.getElementById("outIn").innerHTML = "" + opening;
+                document.getElementById("outOut").innerHTML = "" + closing;
+                document.getElementById("outEfficiency").innerHTML =
+                        "" + Math.round(efficiency * 100) / 100;
+                document.getElementById("outDeficit").innerHTML =
+                        "" + Math.round(deficit * 100) / 100;
+                document.getElementById("outCumulative").innerHTML =
+                        Math.round(cumulativeDeficit);
+                document.getElementById("moneyRatio").innerHTML =
+                        Math.round(amount / units);
+
+                document.getElementById("outCumAmount").innerHTML =
+                        Math.abs(cumulativeAmount) + Math.abs(amount);
+
+                //Comments
+                if (deficit > 0) {
+                    document.getElementById("littleMoney").innerHTML =
+                            "Money not enough";
+                } else {
+                    document.getElementById("littleMoney").innerHTML = "";
+                }
+                if (Math.abs(Math.round(((opening - closing) / 0.63)) - buckets) > 1) {
+                    document.getElementById("badCount").innerHTML =
+                            "Count your buckets well";
+                } else {
+                    document.getElementById("badCount").innerHTML = "";
+                }
+                if (efficiency < 0.55) {
+                    document.getElementById("letItGo").innerHTML =
+                            "Yekela impuphu iphele ungakafaki omunye umumbu";
+                } else if (efficiency > 0.64) {
+                    document.getElementById("badCount").innerHTML =
+                            "Count your buckets well";
+                } else {
+                    document.getElementById("letItGo").innerHTML = "";
+                }
+                if ((amount < expectedMoney * 1.15) & (deficit == 0) & (buckets > 10)) {
+                    document.getElementById("question").innerHTML =
+                            "Is this money enough?";
+                } else {
+                    document.getElementById("question").innerHTML = "";
+                }
+                console.log("Expected money " + expectedMoney);
+                console.log("Expected Buckets " +
+                        Math.round((opening - closing) / 0.63));
+
+
+                console.log("before if" + localStorage.getItem(today) +
+                        "length =" + localStorage.getItem(today).length);
+
+
+                localStorage.setItem(
+                        today, opening + " " + closing + " " + buckets + " " + amount);
+
+                for (var x = 0; x < localStorage.length; x++) {
+                    console.log(localStorage.key(x), localStorage.getItem(localStorage.key(x)));
+                }
+            }
+            function validate(inn, out, buckets, amount, date) {
+                
+            }
+            function generatePlayData() {
+
+            }
+            function average(){
+                
+            }
+        </script>
+    </body>
+</html>
