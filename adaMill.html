@@ -123,9 +123,9 @@
 
                 var units = opening - closing;
 
-                var usualBuckets = units / usualEfficiency;
+                var usualBuckets = Math.ceil(units / usualEfficiency);
                 var expectedMoney = usualBuckets * bucketCost;
-                var today = new Date().toLocaleDateString();
+                var today = new Date();
 
                 if (Math.abs(expectedMoney) > Math.abs(amount)) {
                     deficit = expectedMoney - amount;
@@ -136,7 +136,73 @@
                         Math.abs(elementary.cumDef.value) + Math.abs(deficit);
 
 
+                //Initialises data from localStorage
+                generatePlayData();
 
+                validate(opening, closing, buckets, amount);
+
+
+                displayData(today, amount, buckets, opening,
+                        closing, efficiency, deficit, cumulativeDeficit,
+                        cumulativeAmount);
+
+                storeData();
+
+                for (var x = 0; x < localStorage.length; x++) {
+                    console.log(localStorage.key(x), localStorage.getItem(localStorage.key(x)));
+                }
+            }
+            function validate(inn, out, buckets, amount) {
+                console.log(localStorage.length);
+                if (localStorage.length === 0) {
+                    localStorage.setItem(
+                            JSON.stringify(new Date()), JSON.stringify(
+                            {opening: inn + 6, closing: inn,
+                                buckets: 10, amount: 200}));
+                }
+                var lastKey = localStorage.key(localStorage.length - 1);
+
+                var lastData = JSON.parse(localStorage.getItem(lastKey));
+
+                if (inn === lastData[0] && out === lastData[1]) {
+                    return
+                }
+
+                console.log("asssss " + lastData);
+                if (lastData[1] === inn) {
+                    storeData(inn, out, buckets, amount, new Date())
+                }
+                var lastDate = JSON.parse(lastKey);
+
+            }
+            function generatePlayData() {
+                localStorage.clear();
+                var aDate = new Date();
+                var start, end = 100;
+
+                for (i = new Date().getDate() - 1; i > 0; i--) {
+                    end = start;
+                    var buckets = Math.round(20 * Math.random());
+                    start = end + buckets * 0.63;
+                    var amount = Math.round(buckets * 20 * (0.75 + 0.5 * Math.round()));
+                    storeData(new Date(aDate.getFullYear(),
+                            aDate.getMonth(), i), start, end, buckets, amount);
+                }
+            }
+            function average() {
+
+            }
+
+            function storeData(date, inn, out, buckets, amount) {
+                localStorage.setItem(
+                        JSON.stringify(date), JSON.stringify(
+                        {opening: inn, closing: out,
+                            buckets: buckets, amount: amount}));
+            }
+
+            function displayData(today, amount, buckets, opening,
+                    closing, efficiency, deficit, cumulativeDeficit,
+                    cumulativeAmount) {
                 document.getElementById("outDate").innerHTML = today + "";
                 document.getElementById("outAmount").innerHTML = amount + "";
                 document.getElementById("outBuckets").innerHTML = "" + buckets;
@@ -153,6 +219,7 @@
 
                 document.getElementById("outCumAmount").innerHTML =
                         Math.abs(cumulativeAmount) + Math.abs(amount);
+
 
                 //Comments
                 if (deficit > 0) {
@@ -182,30 +249,7 @@
                 } else {
                     document.getElementById("question").innerHTML = "";
                 }
-                console.log("Expected money " + expectedMoney);
-                console.log("Expected Buckets " +
-                        Math.round((opening - closing) / 0.63));
 
-
-                console.log("before if" + localStorage.getItem(today) +
-                        "length =" + localStorage.getItem(today).length);
-
-
-                localStorage.setItem(
-                        today, opening + " " + closing + " " + buckets + " " + amount);
-
-                for (var x = 0; x < localStorage.length; x++) {
-                    console.log(localStorage.key(x), localStorage.getItem(localStorage.key(x)));
-                }
-            }
-            function validate(inn, out, buckets, amount, date) {
-                
-            }
-            function generatePlayData() {
-
-            }
-            function average(){
-                
             }
         </script>
     </body>
