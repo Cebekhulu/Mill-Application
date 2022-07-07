@@ -3,254 +3,268 @@
 
     <head>
         <style>
-            body{
-                display: flex;
-                flex-direction: column;
-            }
-            input{
-                border-radius: .4em;
-            }
-            fieldset{
-                display: flex;
-                flex-direction: column;
-                background-color: beige;
-
-            }
-            ol{
-                display: flex;
-                flex-direction: column;
-            }
-            li{
-                display: flex;
-                margin-bottom: 0.5em;
-                margin-left: 0em;
-                padding-left: 0em;
-                align-items: flex-start
-            }
-            li.tf{
-                margin-left: auto;
+            input[type=text], select {
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                display: inline-block;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
             }
 
-            #button{
-                align-self: center;
+            input[type=submit] {
+                width: 100%;
+                background-color: #4CAF50;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
             }
-        </style>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title> Grinding mill metrics</title>
-    </head>
-    <body>
-        <h1>Hello mamdala </h1>
-        <form name="mills" >
+
+            input[type=submit]:hover {
+                background-color: #45a049;
+            }
+
+            div {
+                border-radius: 5px;
+                background-color: #f2f2f2;
+                padding: 20px;
+
+            </style>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title> Grinding mill metrics</title>
+        </head>
+        <body>
+            <h2>Hello mamdala </h2>
+            <form name="mills" >
+                <fieldset>
+                    <legend>Fill in mill details</legend>
+                    <ol>
+                        <li><label for="opening">Opening reading:</label>
+                            <input class="tf" type="number" step ="0.01" min="0" name="opening" id="opening"></li>
+                        <li><label for="closing">Closing Reading:</label>
+                            <input type="number" step ="0.01" min ="0" name="closing" id="closing"></li>
+
+                        <li><label for="buckets">Buckets:</label>
+                            <input type="number" step ="1" min ="0" name="buckets" id="buckets"></li>
+                        <li><label for="amount">Amount:</label>
+                            <input type="number" step ="0.5" min ="0" name="amount" id="amount"></li>
+
+                    </ol>
+
+                </fieldset>
+            </form>
+            <input type="submit" value="Calculate" onclick="calculate()" id="button" />
             <fieldset>
-                <legend>Fill in mill details</legend>
+                <legend>Metrics</legend>
                 <ol>
-                    <li><label for="opening">Opening reading:</label>
-                        <input class="tf" type="number" step ="0.01" min="0" name="opening" id="opening"></li>
-                    <li><label for="closing">Closing Reading:</label>
-                        <input type="number" step ="0.01" min ="0" name="closing" id="closing"></li>
 
-                    <li><label for="buckets">Buckets:</label>
-                        <input type="number" step ="1" min ="0" name="buckets" id="buckets"></li>
-                    <li><label for="amount">Amount:</label>
-                        <input type="number" step ="0.5" min ="0" name="amount" id="amount"></li>
-                    <li><label for="cumDef">Cumulative deficit:</label>
-                        <input type="number" min ="0" name="cumulativeDeficit"  id="cumDef" >
-                    <li><label for="cumAmount">Cumulative amount:</label>
-                        <input type="number" min ="0" name="cumulativeAmount" id="cumAmount" >
+                    <li><label for="outCumAmount">Amount this month:</label>
+                        <span id="outCumAmount">z</span>
+                    </li>
+                    <li><label for="outUnits">Units used today:</label>
+                        <span id="outUnuits"></span>
+                    </li>
+
+                    <li><label for="outDeficit">Deficit today:</label>
+                        <span id="outDeficit"></span>
+                    </li>
+                    <li><label for="outCumulative">Deficit this month:</label>
+                        <span id="outCumulative"></span>
+                    </li>
+
                 </ol>
-
             </fieldset>
-        </form>
-        <input type="submit" value="Calculate" onclick="calculate()" id="button" />
-        <fieldset>
-            <legend>Metrics</legend>
-            <ol>
-                <li><label for="outDate">Date:</label>
-                    <span id="outDate"></span>
-                </li>
-                <li><label for="outAmount">Amount:</label>
-                    <span id="outAmount"></span>
-                </li>
-                <li><label for="outCumAmount">Cumulative amount:</label>
-                    <span id="outCumAmount">z</span>
-                </li>
-                <li><label for="outBuckets">Buckets:</label>
-                    <span id="outBuckets"></span>
-                </li>
-                <li><label for="outIn">Units in:</label>
-                    <span id="outIn"></span>
-                </li>
-                <li><label for="outOut">Units out:</label>
-                    <span id="outOut"></span>
-                </li>
-                <li><label for="outEfficiency">Efficiency:</label>
-                    <span id="outEfficiency"></span>
-                </li>
-                <li><label for="outDeficit">Deficit:</label>
-                    <span id="outDeficit"></span>
-                </li>
-                <li><label for="outCumulative">Cumulative deficit:</label>
-                    <span id="outCumulative"></span>
-                </li>
-                <li><label for="moneyRatio">Rand/Unit Ratio:</label>
-                    <span id="moneyRatio"></span>
-                </li>
-            </ol>
-        </fieldset>
-        <fieldset>
-            <legend>Notes</legend>
-            <ul>
-                <li id="badCount"></li>
-                <li id="littleMoney"></li>
-                <li id="letItGo"></li>
-                <li id="question"></li>
+            <fieldset>
+                <legend>Notes</legend>
+                <ul>
+                    <li id="badCount"></li>
+                    <li id="littleMoney"></li>
+                    <li id="letItGo"></li>
+                    <li id="question"></li>
 
-            </ul>
-        </fieldset>        
-        <script defer>
-            function calculate() {
-                var elementary = document.forms.mills.elements;
-                var bucketCost = 20;
-                var amount = elementary.amount.value;
-                var buckets = elementary.buckets.value;
-                var opening = elementary.opening.value;
-                var closing = elementary.closing.value;
-                var efficiency = (opening - closing) / buckets;
-                var deficit;
-                var cumulativeDeficit;
-                var cumulativeAmount = elementary.cumAmount.value;
-                const usualEfficiency = 0.58;
+                </ul>
+            </fieldset>        
+            <script defer>
+                function calculate() {
+                    var elementary = document.forms.mills.elements;
+                    var bucketCost = 20;
+                    var amount = elementary.amount.value;
+                    var buckets = elementary.buckets.value;
+                    var opening = elementary.opening.value;
+                    var closing = elementary.closing.value;
+                    var efficiency = (opening - closing) / buckets;
+                    var deficit;
+                    var cumulativeDeficit;
+                    const usualEfficiency = 0.58;
 
-                var units = opening - closing;
+                    var units = opening - closing;
 
-                var usualBuckets = Math.ceil(units / usualEfficiency);
-                var expectedMoney = usualBuckets * bucketCost;
-                var today = new Date();
+                    var usualBuckets = Math.ceil(units / usualEfficiency);
+                    var expectedMoney = usualBuckets * bucketCost;
+                    var today = new Date();
 
-                if (Math.abs(expectedMoney) > Math.abs(amount)) {
-                    deficit = expectedMoney - amount;
-                } else
-                    deficit = 0;
-
-                cumulativeDeficit =
-                        Math.abs(elementary.cumDef.value) + Math.abs(deficit);
+                    if (Math.abs(expectedMoney) > Math.abs(amount)) {
+                        deficit = expectedMoney - amount;
+                    } else
+                        deficit = 0;
 
 
-                //Initialises data from localStorage
-                generatePlayData();
 
-                validate(opening, closing, buckets, amount);
+                    //Initialises data from localStorage
+                    generatePlayData();
+                    retreiveData();
+                    validate(opening, closing, buckets, amount);
 
 
-                displayData(today, amount, buckets, opening,
-                        closing, efficiency, deficit, cumulativeDeficit,
-                        cumulativeAmount);
+                    displayData(amount, buckets, opening,
+                            closing, efficiency, deficit, cumulativeDeficit,
+                            totalMoney);
 
-                storeData();
+                    storeData();
 
-                for (var x = 0; x < localStorage.length; x++) {
-                    console.log(localStorage.key(x), localStorage.getItem(localStorage.key(x)));
+                    for (var x = 0; x < localStorage.length; x++) {
+                        console.log(localStorage.key(x), localStorage.getItem(localStorage.key(x)));
+                    }
                 }
-            }
-            function validate(inn, out, buckets, amount) {
-                console.log(localStorage.length);
-                if (localStorage.length === 0) {
+                function validate(inn, out, buckets, amount) {
+                    console.log(localStorage.length);
+                    if (localStorage.length === 0) {
+                        localStorage.setItem(
+                                new Date(), JSON.stringify(
+                                {opening: inn + 6, closing: inn,
+                                    buckets: 10, amount: 200}));
+                    }
+                    var lastKey = localStorage.key(localStorage.length - 1);
+
+                    var lastData = JSON.parse(localStorage.getItem(lastKey));
+
+                    if (inn === lastData[0] && out === lastData[1]) {
+                        return;
+                    }
+
+                    console.log("asssss " + lastData);
+                    if (lastData[1] === inn) {
+                        storeData(inn, out, buckets, amount, new Date());
+                    }
+                    var lastDate = lastKey;
+
+                }
+                function generatePlayData() {
+                    localStorage.clear();
+                    var aDate = new Date();
+                    var start = 100, end = 97;
+
+                    for (i = new Date().getDate() - 1; i > 0; i--) {
+
+                        end = start;
+                        var buckets = Math.round(20 * Math.random());
+                        start = end + buckets * 0.63;
+                        var amount = Math.round(buckets * 20 * (0.75 + 0.5 * Math.random()));
+                        storeData(new Date(aDate.getFullYear(),
+                                aDate.getMonth(), i), start, end, buckets, amount);
+                        console.log(new Date(aDate.getFullYear(),
+                                aDate.getMonth(), i), start, end, buckets, amount);
+                    }
+                    console.log("Filled localstorage to " + localStorage.length);
+
+                }
+                function average(c) {
+                    sum = 0;
+                    for (var x = 0; x < c.length; x++) {
+                        sum += c[x];
+                    }
+                    return sum / (c.length);
+                }
+
+                function storeData(date, inn, out, buckets, amount) {
                     localStorage.setItem(
-                            JSON.stringify(new Date()), JSON.stringify(
-                            {opening: inn + 6, closing: inn,
-                                buckets: 10, amount: 200}));
+                            date, JSON.stringify(
+                                    {opening: inn, closing: out,
+                                        buckets: buckets, amount: amount}));
                 }
-                var lastKey = localStorage.key(localStorage.length - 1);
+                var totalMoney, totalUnits, totalDeficit;
+                function retreiveData() {
+                    var thisMonth = new Date().getMonth();
+                    var storageSize = localStorage.length;
+                    var storageArray = [];
 
-                var lastData = JSON.parse(localStorage.getItem(lastKey));
+                    totalMoney = 0;
+                    totalDeficit = 0;
+                    totalUnits = 0;
+                    for (var i = 0; i < storageSize; i++) {
+                        var index = localStorage.key(i);
+                        var date = new Date(index);
 
-                if (inn === lastData[0] && out === lastData[1]) {
-                    return
-                }
+                        console.log("date this month " + thisMonth + " " + date.getMonth());
 
-                console.log("asssss " + lastData);
-                if (lastData[1] === inn) {
-                    storeData(inn, out, buckets, amount, new Date())
-                }
-                var lastDate = JSON.parse(lastKey);
+                        if (date.getMonth() !== thisMonth)
+                            continue;
+                        storageArray[i] = [date, JSON.parse(localStorage.getItem(index))];
 
-            }
-            function generatePlayData() {
-                localStorage.clear();
-                var aDate = new Date();
-                var start, end = 100;
+                    }
+                    for (var i = 0; i < storageArray.length; i++) {
+                        totalMoney += storageArray[i][1].amount;
+                        totalUnits += storageArray[i][1].opening
+                                - storageArray[i][1].closing;
+                        ;
+                    }
+                    totalDeficit = 20 * totalUnits / 0.63 - totalMoney;
 
-                for (i = new Date().getDate() - 1; i > 0; i--) {
-                    end = start;
-                    var buckets = Math.round(20 * Math.random());
-                    start = end + buckets * 0.63;
-                    var amount = Math.round(buckets * 20 * (0.75 + 0.5 * Math.round()));
-                    storeData(new Date(aDate.getFullYear(),
-                            aDate.getMonth(), i), start, end, buckets, amount);
-                }
-            }
-            function average() {
-
-            }
-
-            function storeData(date, inn, out, buckets, amount) {
-                localStorage.setItem(
-                        JSON.stringify(date), JSON.stringify(
-                        {opening: inn, closing: out,
-                            buckets: buckets, amount: amount}));
-            }
-
-            function displayData(today, amount, buckets, opening,
-                    closing, efficiency, deficit, cumulativeDeficit,
-                    cumulativeAmount) {
-                document.getElementById("outDate").innerHTML = today + "";
-                document.getElementById("outAmount").innerHTML = amount + "";
-                document.getElementById("outBuckets").innerHTML = "" + buckets;
-                document.getElementById("outIn").innerHTML = "" + opening;
-                document.getElementById("outOut").innerHTML = "" + closing;
-                document.getElementById("outEfficiency").innerHTML =
-                        "" + Math.round(efficiency * 100) / 100;
-                document.getElementById("outDeficit").innerHTML =
-                        "" + Math.round(deficit * 100) / 100;
-                document.getElementById("outCumulative").innerHTML =
-                        Math.round(cumulativeDeficit);
-                document.getElementById("moneyRatio").innerHTML =
-                        Math.round(amount / units);
-
-                document.getElementById("outCumAmount").innerHTML =
-                        Math.abs(cumulativeAmount) + Math.abs(amount);
-
-
-                //Comments
-                if (deficit > 0) {
-                    document.getElementById("littleMoney").innerHTML =
-                            "Money not enough";
-                } else {
-                    document.getElementById("littleMoney").innerHTML = "";
-                }
-                if (Math.abs(Math.round(((opening - closing) / 0.63)) - buckets) > 1) {
-                    document.getElementById("badCount").innerHTML =
-                            "Count your buckets well";
-                } else {
-                    document.getElementById("badCount").innerHTML = "";
-                }
-                if (efficiency < 0.55) {
-                    document.getElementById("letItGo").innerHTML =
-                            "Yekela impuphu iphele ungakafaki omunye umumbu";
-                } else if (efficiency > 0.64) {
-                    document.getElementById("badCount").innerHTML =
-                            "Count your buckets well";
-                } else {
-                    document.getElementById("letItGo").innerHTML = "";
-                }
-                if ((amount < expectedMoney * 1.15) & (deficit == 0) & (buckets > 10)) {
-                    document.getElementById("question").innerHTML =
-                            "Is this money enough?";
-                } else {
-                    document.getElementById("question").innerHTML = "";
                 }
 
-            }
-        </script>
-    </body>
-</html>
+                function displayData(amount, buckets, opening,
+                        closing, efficiency, deficit, cumulativeDeficit,
+                        cumulativeAmount) {
+
+                    document.getElementById("outCumAmount").innerHTML = totalMoney + "";
+
+                    document.getElementById("outDeficit").innerHTML =
+                            "" + Math.round(deficit * 100) / 100;
+                    document.getElementById("outCumulative").innerHTML = totalDeficit;
+
+
+                    document.getElementById("outCumAmount").innerHTML =
+                            Math.abs(cumulativeAmount) + Math.abs(amount);
+
+
+                    var amountThisMonth, expectedThisMonth;
+
+
+
+                    //Comments
+                    if (deficit > 0) {
+                        document.getElementById("littleMoney").innerHTML =
+                                "Money not enough";
+                    } else {
+                        document.getElementById("littleMoney").innerHTML = "";
+                    }
+                    if (Math.abs(Math.round(((opening - closing) / 0.63)) - buckets) > 1) {
+                        document.getElementById("badCount").innerHTML =
+                                "Count your buckets well";
+                    } else {
+                        document.getElementById("badCount").innerHTML = "";
+                    }
+                    if (efficiency < 0.55) {
+                        document.getElementById("letItGo").innerHTML =
+                                "Yekela impuphu iphele ungakafaki omunye umumbu";
+                    } else if (efficiency > 0.64) {
+                        document.getElementById("badCount").innerHTML =
+                                "Count your buckets well";
+                    } else {
+                        document.getElementById("letItGo").innerHTML = "";
+                    }
+                    if ((amount < expectedMoney * 1.15) & (deficit == 0) & (buckets > 10)) {
+                        document.getElementById("question").innerHTML =
+                                "Is this money enough?";
+                    } else {
+                        document.getElementById("question").innerHTML = "";
+                    }
+
+                }
+            </script>
+        </body>
+    </html>
