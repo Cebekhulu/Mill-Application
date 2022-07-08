@@ -62,18 +62,24 @@
                 <legend>Metrics</legend>
                 <ol>
 
-                    <li><label for="outCumAmount">Amount this month:</label>
-                        <span id="outCumAmount">z</span>
-                    </li>
                     <li><label for="outUnits">Units used today:</label>
-                        <span id="outUnuits"></span>
+                        <span id="outUnits"></span>
+                    </li>
+
+                    <li><label for="expMoney">Money expected today:</label>
+                        <span id="expMoney"></span>
                     </li>
 
                     <li><label for="outDeficit">Deficit today:</label>
                         <span id="outDeficit"></span>
                     </li>
+                    
+                    <li><label for="outCumAmount">Amount this month:</label>
+                        <span id="outCumAmount"></span>
+                    </li>
+                    
                     <li><label for="outCumulative">Deficit this month:</label>
-                        <span id="outCumulative"></span>
+                        <span id="outCumulative">0</span>
                     </li>
 
                 </ol>
@@ -89,6 +95,7 @@
                 </ul>
             </fieldset>        
             <script defer>
+                var expectedMoney;
                 function calculate() {
                     var elementary = document.forms.mills.elements;
                     var bucketCost = 20;
@@ -99,14 +106,13 @@
                     var efficiency = (opening - closing) / buckets;
                     var deficit;
                     var cumulativeDeficit;
-                    const usualEfficiency = 0.58;
+                    const usualEfficiency = 0.63;
 
                     var units = opening - closing;
 
                     var usualBuckets = Math.ceil(units / usualEfficiency);
-                    var expectedMoney = usualBuckets * bucketCost;
-                    var today = new Date();
-
+                    expectedMoney = usualBuckets * bucketCost;
+                    console.log("Expected - Amount " + expectedMoney + "" + amount)
                     if (Math.abs(expectedMoney) > Math.abs(amount)) {
                         deficit = expectedMoney - amount;
                     } else
@@ -220,18 +226,24 @@
                         closing, efficiency, deficit, cumulativeDeficit,
                         cumulativeAmount) {
 
+                    clearCounters();
+
                     document.getElementById("outCumAmount").innerHTML = totalMoney + "";
 
                     document.getElementById("outDeficit").innerHTML =
                             "" + Math.round(deficit * 100) / 100;
-                    document.getElementById("outCumulative").innerHTML = totalDeficit;
+                    totalDeficit = Math.round(totalDeficit);
+                    if (totalDeficit > 0) {
+                        document.getElementById("outCumulative").innerHTML = totalDeficit;
+                    }
 
 
                     document.getElementById("outCumAmount").innerHTML =
                             Math.abs(cumulativeAmount) + Math.abs(amount);
 
-
-                    var amountThisMonth, expectedThisMonth;
+                    document.getElementById("outUnits").innerHTML = opening - closing;
+                    
+                    document.getElementById("expMoney").innerHTML = expectedMoney+" +";
 
 
 
@@ -248,20 +260,21 @@
                     } else {
                         document.getElementById("badCount").innerHTML = "";
                     }
-                    if (efficiency < 0.55) {
+                    if (efficiency < 0.6) {
                         document.getElementById("letItGo").innerHTML =
-                                "Yekela impuphu iphele ungakafaki omunye umumbu";
+                                "Gayisa iskhathi esikwanileyo";
                     } else if (efficiency > 0.64) {
                         document.getElementById("badCount").innerHTML =
                                 "Count your buckets well";
                     } else {
                         document.getElementById("letItGo").innerHTML = "";
                     }
-                    if ((amount < expectedMoney * 1.15) & (deficit == 0) & (buckets > 10)) {
-                        document.getElementById("question").innerHTML =
-                                "Is this money enough?";
-                    } else {
-                        document.getElementById("question").innerHTML = "";
+                    
+                    function clearCounters() {
+                        document.getElementById("outCumAmount").innerHTML = "";
+                        document.getElementById("outDeficit").innerHTML = "";
+                        document.getElementById("outCumulative").innerHTML = "";
+                        document.getElementById("outUnits").innerHTML = "";
                     }
 
                 }
