@@ -73,11 +73,11 @@
                     <li><label for="outDeficit">Deficit today:</label>
                         <span id="outDeficit"></span>
                     </li>
-                    
+
                     <li><label for="outCumAmount">Amount this month:</label>
                         <span id="outCumAmount"></span>
                     </li>
-                    
+
                     <li><label for="outCumulative">Deficit this month:</label>
                         <span id="outCumulative">0</span>
                     </li>
@@ -112,7 +112,7 @@
 
                     var usualBuckets = Math.ceil(units / usualEfficiency);
                     expectedMoney = usualBuckets * bucketCost;
-                    console.log("Expected - Amount " + expectedMoney + "" + amount)
+                    console.log("Expected - Amount " + expectedMoney + " - " + amount);
                     if (Math.abs(expectedMoney) > Math.abs(amount)) {
                         deficit = expectedMoney - amount;
                     } else
@@ -121,42 +121,47 @@
 
 
                     //Initialises data from localStorage
-                    generatePlayData();
+                    //generatePlayData();
                     retreiveData();
                     validate(opening, closing, buckets, amount);
 
 
-                    displayData(amount, buckets, opening,
-                            closing, efficiency, deficit, cumulativeDeficit,
+                    displayData(buckets, opening,
+                            closing, efficiency, deficit,
                             totalMoney);
 
-                    storeData();
-
-                    for (var x = 0; x < localStorage.length; x++) {
-                        console.log(localStorage.key(x), localStorage.getItem(localStorage.key(x)));
-                    }
                 }
+
+                //no validation yet
                 function validate(inn, out, buckets, amount) {
-                    console.log(localStorage.length);
-                    if (localStorage.length === 0) {
-                        localStorage.setItem(
-                                new Date(), JSON.stringify(
-                                {opening: inn + 6, closing: inn,
-                                    buckets: 10, amount: 200}));
-                    }
+                    
+                    localStorage.clear();
+                    var today = new Date();
+                    today.setHours(0);
+                    today.setMinutes(0);
+                    today.setSeconds(0);
+                    today.setMilliseconds(0);
+                    
+                    if (localStorage.length === 0)
+                        storeData(today, inn, out, buckets, amount);
+
                     var lastKey = localStorage.key(localStorage.length - 1);
 
                     var lastData = JSON.parse(localStorage.getItem(lastKey));
+                    
+                    console.log("lastData "+lastData.opening);
 
-                    if (inn === lastData[0] && out === lastData[1]) {
+                    if (inn === lastData.opening && out === lastData.closing) {
+                        console.log("done nothing since there is no change");
                         return;
+                        
                     }
 
-                    console.log("asssss " + lastData);
-                    if (lastData[1] === inn) {
-                        storeData(inn, out, buckets, amount, new Date());
-                    }
-                    var lastDate = lastKey;
+                    console.log("last Data & iinn " + lastData.opening + " & " + inn);
+
+
+                    storeData(today, inn, out, buckets, amount);
+
 
                 }
                 function generatePlayData() {
@@ -194,36 +199,44 @@
                 }
                 var totalMoney, totalUnits, totalDeficit;
                 function retreiveData() {
+
                     var thisMonth = new Date().getMonth();
                     var storageSize = localStorage.length;
-                    var storageArray = [];
-
                     totalMoney = 0;
                     totalDeficit = 0;
                     totalUnits = 0;
+                    console.log("storageSize " + storageSize);
+
+                    if (storageSize === 0){
+                        return;}
+                    
+                    var storageArray = [];
+
+
                     for (var i = 0; i < storageSize; i++) {
                         var index = localStorage.key(i);
                         var date = new Date(index);
 
-                        console.log("date this month " + thisMonth + " " + date.getMonth());
 
                         if (date.getMonth() !== thisMonth)
                             continue;
                         storageArray[i] = [date, JSON.parse(localStorage.getItem(index))];
 
                     }
+                    
                     for (var i = 0; i < storageArray.length; i++) {
+                         console.log("Tot dinero "+totalMoney+" storedMoney "+storageArray[i][1].amount);
                         totalMoney += storageArray[i][1].amount;
+                       
                         totalUnits += storageArray[i][1].opening
                                 - storageArray[i][1].closing;
-                        ;
                     }
                     totalDeficit = 20 * totalUnits / 0.63 - totalMoney;
 
                 }
 
-                function displayData(amount, buckets, opening,
-                        closing, efficiency, deficit, cumulativeDeficit,
+                function displayData(buckets, opening,
+                        closing, efficiency, deficit,
                         cumulativeAmount) {
 
                     clearCounters();
@@ -239,11 +252,11 @@
 
 
                     document.getElementById("outCumAmount").innerHTML =
-                            Math.abs(cumulativeAmount) + Math.abs(amount);
+                            Math.abs(cumulativeAmount);
 
                     document.getElementById("outUnits").innerHTML = opening - closing;
-                    
-                    document.getElementById("expMoney").innerHTML = expectedMoney+" +";
+
+                    document.getElementById("expMoney").innerHTML = expectedMoney + " +";
 
 
 
@@ -269,14 +282,15 @@
                     } else {
                         document.getElementById("letItGo").innerHTML = "";
                     }
-                    
-                    function clearCounters() {
-                        document.getElementById("outCumAmount").innerHTML = "";
-                        document.getElementById("outDeficit").innerHTML = "";
-                        document.getElementById("outCumulative").innerHTML = "";
-                        document.getElementById("outUnits").innerHTML = "";
-                    }
 
+
+
+                }
+                function clearCounters() {
+                    document.getElementById("outCumAmount").innerHTML = "";
+                    document.getElementById("outDeficit").innerHTML = "";
+                    document.getElementById("outCumulative").innerHTML = "";
+                    document.getElementById("outUnits").innerHTML = "";
                 }
             </script>
         </body>
