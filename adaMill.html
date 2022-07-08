@@ -105,7 +105,6 @@
                     var closing = elementary.closing.value;
                     var efficiency = (opening - closing) / buckets;
                     var deficit;
-                    var cumulativeDeficit;
                     const usualEfficiency = 0.63;
 
                     var units = opening - closing;
@@ -118,13 +117,11 @@
                     } else
                         deficit = 0;
 
-
-
+                    validate(opening, closing, buckets, amount);
+                    
                     //Initialises data from localStorage
                     //generatePlayData();
                     retreiveData();
-                    validate(opening, closing, buckets, amount);
-
 
                     displayData(buckets, opening,
                             closing, efficiency, deficit,
@@ -134,31 +131,29 @@
 
                 //no validation yet
                 function validate(inn, out, buckets, amount) {
-                    
-                    localStorage.clear();
+
                     var today = new Date();
                     today.setHours(0);
                     today.setMinutes(0);
                     today.setSeconds(0);
                     today.setMilliseconds(0);
-                    
-                    if (localStorage.length === 0)
+
+                    if (localStorage.length === 0) {
                         storeData(today, inn, out, buckets, amount);
+                        return;
+                    }
 
                     var lastKey = localStorage.key(localStorage.length - 1);
 
                     var lastData = JSON.parse(localStorage.getItem(lastKey));
-                    
-                    console.log("lastData "+lastData.opening);
 
                     if (inn === lastData.opening && out === lastData.closing) {
                         console.log("done nothing since there is no change");
                         return;
-                        
+
                     }
 
                     console.log("last Data & iinn " + lastData.opening + " & " + inn);
-
 
                     storeData(today, inn, out, buckets, amount);
 
@@ -197,7 +192,8 @@
                                     {opening: inn, closing: out,
                                         buckets: buckets, amount: amount}));
                 }
-                var totalMoney, totalUnits, totalDeficit;
+                var totalMoney = 0, totalUnits = 0, totalDeficit = 0;
+
                 function retreiveData() {
 
                     var thisMonth = new Date().getMonth();
@@ -207,9 +203,10 @@
                     totalUnits = 0;
                     console.log("storageSize " + storageSize);
 
-                    if (storageSize === 0){
-                        return;}
-                    
+                    if (storageSize === 0) {
+                        return;
+                    }
+
                     var storageArray = [];
 
 
@@ -223,11 +220,11 @@
                         storageArray[i] = [date, JSON.parse(localStorage.getItem(index))];
 
                     }
-                    
+
                     for (var i = 0; i < storageArray.length; i++) {
-                         console.log("Tot dinero "+totalMoney+" storedMoney "+storageArray[i][1].amount);
+                        console.log("Tot dinero " + totalMoney + " storedMoney " + storageArray[i][1].amount);
                         totalMoney += storageArray[i][1].amount;
-                       
+
                         totalUnits += storageArray[i][1].opening
                                 - storageArray[i][1].closing;
                     }
