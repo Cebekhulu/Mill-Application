@@ -109,7 +109,8 @@
 
                     var units = opening - closing;
 
-                    var usualBuckets = Math.ceil(units / usualEfficiency);
+                    var buckets = units / usualEfficiency;
+                    var usualBuckets = buckets>1.2*Math.round(buckets)?Math.ceil(buckets):Math.round(buckets);
                     expectedMoney = usualBuckets * bucketCost;
                     console.log("Expected - Amount " + expectedMoney + " - " + amount);
                     if (Math.abs(expectedMoney) > Math.abs(amount)) {
@@ -251,7 +252,7 @@
                     document.getElementById("outCumAmount").innerHTML =
                             Math.abs(cumulativeAmount);
 
-                    document.getElementById("outUnits").innerHTML = opening - closing;
+                    document.getElementById("outUnits").innerHTML = (Math.round(100*opening - 100*closing))/100;
 
                     document.getElementById("expMoney").innerHTML = expectedMoney + " +";
 
