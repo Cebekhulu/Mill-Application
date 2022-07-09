@@ -223,7 +223,7 @@
 
                     for (var i = 0; i < storageArray.length; i++) {
                         console.log("Tot dinero " + totalMoney + " storedMoney " + storageArray[i][1].amount);
-                        totalMoney += storageArray[i][1].amount;
+                        totalMoney += Math.abs(storageArray[i][1].amount);
 
                         totalUnits += storageArray[i][1].opening
                                 - storageArray[i][1].closing;
@@ -279,8 +279,6 @@
                     } else {
                         document.getElementById("letItGo").innerHTML = "";
                     }
-
-
 
                 }
                 function clearCounters() {
